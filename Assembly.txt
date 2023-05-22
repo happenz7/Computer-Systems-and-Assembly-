@@ -1,0 +1,89 @@
+// starpattern = 00100100
+// middlepattern = 10000100
+// loc = 80
+// while(startpattern  != middlepattern)	
+//		place pattern 12 times and rotate pattern seven to the right
+//   	if pattern 1 = middlepattern
+//		repeat until loc FF
+// 		place pattern 12 times and rotate one to the right
+//  output pattern at loc(output)
+//
+	
+	MOV 0C -> R0 //moving 12(hex) into register
+	 MOV 01 -> R1 //constant 1
+	 MOV 80 -> R2 // loc
+	 //R3 is iterator
+	 MOV 00100100 -> R4 //first pattern
+	 MOV loop -> RB //First loop -> before midpoint
+	 MOV loop2 -> RC //Second loop -> after midpoint
+	 MOV output -> RD // First output -> before midpoint
+	 MOV output2 -> RE // Second output -> after midpoint
+	 MOV output3 -> RF // Third output -> to HALT
+	
+
+loop:
+	
+	MOV R4 -> [R2] // output pattern at loc
+	 ADDI R1,R2 -> R2 //incrementing location
+	 ADDI R3,R1 -> R3 //R3 acts as iterator
+
+	 JMPGE RD,R3 //jumping to output1 if pattern has been placed 12 times
+	 JMP loop //repeating loop if condition is not met
+	
+	 
+loop2:
+	MOV R4 -> [R2] // output pattern at loc
+	 ADDI R1,R2 -> R2 //incrementing location
+	 ADDI R3,R1 -> R3 //R3 acts as iterator
+
+	 JMPGE RE, R3 //jumping to output2 if pattern has been placed 12 times
+	 JMP loop2 //repeating loop if condition is not met
+	
+	
+output:
+	MOV 10000100 -> R0 //testing if middlepattern is reached
+	 JMPEQ RE, R4 //jumping to output2 if middlepattern is reached
+
+
+	 MOV 00 -> R3 //resetting iterator
+	 MOV 0C -> R0 //resetting R0
+	 MOV R4 -> [R5] // output pattern at loc
+	 ROT R4,7 //Rotating pattern 7 to the right (equivalent to 1 to the left)
+	 JMP loop //Jump to loop1
+
+	 //JMPNE RB, R1 (Same as JMP loop but more complex instruction)
+
+	
+output2:
+	MOV 00100100 -> R0 //testing if startpattern is reached
+	 JMPEQ RF, R4 //jumping two output3 if startpattern is reached again
+
+	 MOV 00 -> R3 //resetting iterator
+	 MOV 0C -> R0 //resetting R0
+	 MOV R4 -> [R5] // output pattern at loc
+	 ROT R4,1 //Rotating pattern 1 to the right, to return to start
+	 JMP loop2 //Jump to loop2
+
+	 //JMPEQ RC, R0 (Same as JMP loop2 but more complex)
+
+output3: HALT //Halt instructions
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+
